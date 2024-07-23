@@ -3,31 +3,59 @@ import { Container, Spinner } from 'react-bootstrap';
 import SearchBar from '../components/SearchBar';
 import ContentList from '../components/ContentList';
 import { getContent } from '../services/contentService';
+import '../custom.css';
 
 const HomePage = () => {
   const [contents, setContents] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [offset, setOffset] = useState(0);
+  const [query, setQuery] = useState('');
 
-  const fetchContents = async (query) => {
+  const fetchContents = async (newQuery, newOffset = 0) => {
     setLoading(true);
-    const data = await getContent(query);
-    setContents(data);
+    const data = await getContent(newQuery, newOffset);
+    setContents(newOffset === 0 ? data : [...contents, ...data]);
     setLoading(false);
   };
 
+  const handleScroll = () => {
+    if (window.innerHeight + document.documentElement.scrollTop !== document.documentElement.offsetHeight || loading) return;
+    setOffset(prevOffset => prevOffset + 20);
+  };
+
   useEffect(() => {
-    fetchContents('');
-  }, []);
+    fetchContents(query, offset);
+  }, [offset]);
+
+  useEffect(() => {
+    fetchContents(query);
+  }, [query]);
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [loading]);
 
   return (
     <Container>
-      <SearchBar onSearch={fetchContents} />
-      {loading ? (
-        <Spinner animation="border" role="status">
-          <span className="sr-only">Loading...</span>
-        </Spinner>
+      <h1>Tigerhall Logo</h1>
+      <SearchBar onSearch={setQuery} />
+      <h3>Tigerhall Library</h3>
+      {loading && offset === 0 ? (
+        <div className="d-flex justify-content-center">
+          <Spinner animation="border" role="status">
+            <span className="sr-only">Loading...</span>
+          </Spinner>
+        </div>
       ) : (
         <ContentList contents={contents} />
+      )}
+      {loading && offset > 0 && (
+        <div className="d-flex justify-content-center">
+          <Spinner animation="border" role="status">
+            <span className="sr-only">Loading...</span>
+          </Spinner>
+        </div>
       )}
     </Container>
   );

@@ -5,11 +5,11 @@ const client = new ApolloClient({
   cache: new InMemoryCache()
 });
 
-export const getContent = async (query) => {
+export const getContent = async (query, offset) => {
   const response = await client.query({
     query: gql`
-      query GetContent($keywords: String!) {
-        contentCards(filter: { limit: 20, keywords: $keywords, types: [PODCAST] }) {
+      query GetContent($keywords: String!, $offset: Int!) {
+        contentCards(filter: { limit: 20, keywords: $keywords, offset: $offset, types: [PODCAST] }) {
           edges {
             ... on Podcast {
               name
@@ -38,11 +38,9 @@ export const getContent = async (query) => {
       fragment Expert on Expert {
         firstName
         lastName
-        title
-        company
       }
     `,
-    variables: { keywords: query }
+    variables: { keywords: query, offset }
   });
 
   return response.data.contentCards.edges;
