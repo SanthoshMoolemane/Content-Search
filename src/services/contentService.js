@@ -1,7 +1,7 @@
 import { gql, ApolloClient, InMemoryCache } from "@apollo/client";
 
 const client = new ApolloClient({
-  uri: "https://api.tigerhall.net/v2/",
+  uri: "/api/v2/",
   cache: new InMemoryCache(),
 });
 
