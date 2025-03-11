@@ -1,15 +1,22 @@
-import { gql, ApolloClient, InMemoryCache } from '@apollo/client';
+import { gql, ApolloClient, InMemoryCache } from "@apollo/client";
 
 const client = new ApolloClient({
-  uri: 'https://api.tigerhall.net/v2/',
-  cache: new InMemoryCache()
+  uri: "https://api.tigerhall.net/v2/",
+  cache: new InMemoryCache(),
 });
 
 export const getContent = async (query, offset) => {
   const response = await client.query({
     query: gql`
       query GetContent($keywords: String!, $offset: Int!) {
-        contentCards(filter: { limit: 20, keywords: $keywords, offset: $offset, types: [PODCAST] }) {
+        contentCards(
+          filter: {
+            limit: 40
+            keywords: $keywords
+            offset: $offset
+            types: [PODCAST]
+          }
+        ) {
           edges {
             ... on Podcast {
               name
@@ -40,7 +47,7 @@ export const getContent = async (query, offset) => {
         lastName
       }
     `,
-    variables: { keywords: query, offset }
+    variables: { keywords: query, offset },
   });
 
   return response.data.contentCards.edges;

@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { Container, Spinner } from 'react-bootstrap';
-import SearchBar from '../components/SearchBar';
-import ContentList from '../components/ContentList';
-import { getContent } from '../services/contentService';
-import '../custom.css';
+import React, { useState, useEffect } from "react";
+import { Container, Spinner } from "react-bootstrap";
+import SearchBar from "../components/SearchBar";
+import ContentList from "../components/ContentList";
+import { getContent } from "../services/contentService";
+import "../custom.css";
 
 const HomePage = () => {
   const [contents, setContents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [offset, setOffset] = useState(0);
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
 
   const fetchContents = async (newQuery, newOffset = 0) => {
     setLoading(true);
@@ -19,8 +19,14 @@ const HomePage = () => {
   };
 
   const handleScroll = () => {
-    if (window.innerHeight + document.documentElement.scrollTop !== document.documentElement.offsetHeight || loading) return;
-    setOffset(prevOffset => prevOffset + 20);
+    console.log("scroll:");
+    if (
+      window.innerHeight + document.documentElement.scrollTop !==
+        document.documentElement.offsetHeight ||
+      loading
+    )
+      return;
+    setOffset((prevOffset) => prevOffset + 20);
   };
 
   useEffect(() => {
@@ -32,15 +38,15 @@ const HomePage = () => {
   }, [query]);
 
   useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, [loading]);
 
   return (
     <Container>
-      <h1>Tigerhall Logo</h1>
+      <h1 style={{ textAlign: "center" }}>Content Search</h1>
       <SearchBar onSearch={setQuery} />
-      <h3>Tigerhall Library</h3>
+      <h3>Content Library</h3>
       {loading && offset === 0 ? (
         <div className="d-flex justify-content-center">
           <Spinner animation="border" role="status">

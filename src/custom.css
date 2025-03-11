@@ -58,6 +58,7 @@ h3{
   border: none !important;
   margin-top: auto;
   margin-bottom: 60px;
+  text-align: center;
 }
 
 .form-control::placeholder {
